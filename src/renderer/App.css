@@ -1,0 +1,13 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-primary {
+    @apply text-white bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed rounded-lg text-sm p-2.5 mr-1 dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-700 !important;
+  }
+}
