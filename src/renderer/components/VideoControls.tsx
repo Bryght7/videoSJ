@@ -1,16 +1,14 @@
 import { memo } from 'react';
-import 'tailwindcss/tailwind.css';
 import ButtonIcon from './ButtonIcon';
 
 type Props = {
-  isPlaying: boolean;
-  onControl: (control: 'Play' | 'Pause' | 'Stop') => void;
+  playing: boolean;
+  onControl: (control: 'Play' | 'Pause') => void;
 };
 
-// We use memo to prevent re-rendering when the video timestamp is updated
-const VideoControls = memo(({ isPlaying, onControl }: Props) => {
+const VideoControls = ({ playing, onControl }: Props) => {
   const PlayPauseButton = () => {
-    return isPlaying ? (
+    return playing ? (
       <ButtonIcon onClick={() => onControl('Pause')}>
         {/* prettier-ignore */}
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-5 h-5" viewBox="0 0 16 16">
@@ -27,11 +25,11 @@ const VideoControls = memo(({ isPlaying, onControl }: Props) => {
     );
   };
 
-  return (
-    <div>
-      <PlayPauseButton />
-    </div>
-  );
-});
+  return <PlayPauseButton />;
+};
 
-export default VideoControls;
+// Using memo to only re-render when `playing` changes
+export default memo(
+  VideoControls,
+  (prevProps, nextProps) => prevProps.playing === nextProps.playing
+);

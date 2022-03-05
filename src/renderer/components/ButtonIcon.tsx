@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import 'tailwindcss/tailwind.css';
 
 type Props = {
   isDisabled?: boolean;
@@ -8,6 +7,8 @@ type Props = {
 };
 
 const ButtonIcon = ({ isDisabled = false, onClick, children }: Props) => {
+  console.log('rtendering button');
+
   return (
     <button
       type="button"

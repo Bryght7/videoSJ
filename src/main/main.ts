@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, protocol, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -23,13 +23,19 @@ export default class AppUpdater {
   }
 }
 
-let mainWindow: BrowserWindow | null = null;
+/**
+ * ICP stuff (🔎 for other ICP references)
+ * Typings for our custom ICP api
+ */
+declare global {
+  interface Window {
+    api: {
+      openFileDialog: () => Promise<string | null>;
+    };
+  }
+}
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
+let mainWindow: BrowserWindow | null = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -112,6 +118,20 @@ const createWindow = async () => {
 };
 
 /**
+ * ICP stuff (🔎 for other ICP references)
+ * Handler functions
+ */
+
+const handleFileOpen = async () => {
+  if (mainWindow) {
+    // TODO: limit type to mp4
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow);
+    return canceled ? null : filePaths[0];
+  }
+  return null;
+};
+
+/**
  * Add event listeners...
  */
 
@@ -127,6 +147,13 @@ app
   .whenReady()
   .then(() => {
     createWindow();
+
+    /**
+     * ICP stuff (🔎 for other ICP references)
+     * Handlers for invokeable IPCs
+     */
+    ipcMain.handle('open-file-dialog', handleFileOpen);
+
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
@@ -134,3 +161,16 @@ app
     });
   })
   .catch(console.log);
+
+// Custom protocol called `vsg://` to allow Electron to open local files (security)
+app.on('ready', async () => {
+  protocol.registerFileProtocol('vsj', (request, callback) => {
+    const url = request.url.replace('vsj://', '');
+    try {
+      return callback(url);
+    } catch (error) {
+      console.error(error);
+      return callback('404');
+    }
+  });
+});

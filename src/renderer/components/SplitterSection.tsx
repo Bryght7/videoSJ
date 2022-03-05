@@ -1,70 +1,89 @@
-import { useCallback, useEffect, useState } from 'react';
-import 'tailwindcss/tailwind.css';
-import VideoPlayer from './VideoPlayer';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
 import VideoSeeker from './VideoSeeker';
 
 const SplitterSection = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [played, setPlayed] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
-  const [videoElement, setVideoElement] = useState<HTMLMediaElement>();
+  const [videoUrl, setVideoUrl] = useState('');
 
-  // TODO: when I implement open file, maybe see if I can put this there
-  useEffect(() => {
-    setVideoElement(document.getElementById('videoPlayer') as HTMLMediaElement);
-    setInterval(() => {
-      if (videoElement) {
-        setCurrentTime(Math.floor(videoElement.currentTime));
-        if (!Number.isNaN(videoElement.duration)) {
-          setTotalDuration(Math.floor(videoElement.duration));
-        }
-      }
-    }, 100);
-  }, [videoElement]);
+  const reactPlayer = useRef(null);
 
-  const handleOnVideoEnded = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
+  const handleOnEnded = () => {
+    setPlaying(false);
+  };
 
-  const handleControl = useCallback(
-    (control: 'Play' | 'Pause' | 'Stop') => {
-      if (videoElement) {
-        switch (control) {
-          case 'Play':
-            videoElement.play();
-            setIsPlaying(true);
-            break;
-          case 'Pause':
-            videoElement.pause();
-            setIsPlaying(false);
-            break;
-          case 'Stop':
-            videoElement.pause();
-            videoElement.currentTime = 0;
-            setIsPlaying(false);
-            break;
-          default:
-        }
-      }
-    },
-    [videoElement]
-  );
+  const handleOnDuration = (duration: number) => {
+    setTotalDuration(duration);
+  };
 
-  const handleSeekChange = (event) => {
-    setCurrentTime(event.target.value);
+  const handleOnProgress = (state: {
+    played: number;
+    playedSeconds: number;
+    loaded: number;
+    loadedSeconds: number;
+  }) => {
+    setPlayed(state.playedSeconds);
+  };
+
+  const handleControl = (control: 'Play' | 'Pause') => {
+    switch (control) {
+      case 'Play':
+        setPlaying(true);
+        break;
+      case 'Pause':
+        setPlaying(false);
+        break;
+      default:
+    }
+  };
+
+  const handleSeekChange = (event: ChangeEvent) => {
+    const target = event.target as HTMLInputElement;
+    setPlayed(parseInt(target.value, 10));
+  };
+
+  const handleSeekMouseUp = (
+    event: MouseEvent<HTMLInputElement, globalThis.MouseEvent>
+  ) => {
+    const target = event.target as HTMLInputElement;
+    if (reactPlayer.current) {
+      (reactPlayer.current as ReactPlayer)?.seekTo(parseInt(target.value, 10));
+    }
+  };
+
+  const handleOpenFile = async () => {
+    const filePath = await window.api.openFileDialog();
+    if (filePath) {
+      setVideoUrl(`vsj://${filePath}`);
+    }
   };
 
   return (
     <div>
-      <VideoPlayer onVideoEnded={handleOnVideoEnded} />
-      <VideoControls isPlaying={isPlaying} onControl={handleControl} />
-      <VideoTimestamp currentTime={currentTime} totalDuration={totalDuration} />
+      <div className="mb-2 bg-black">
+        <ReactPlayer
+          ref={reactPlayer}
+          url={videoUrl}
+          playing={playing}
+          onEnded={handleOnEnded}
+          onDuration={handleOnDuration}
+          onProgress={handleOnProgress}
+        />
+      </div>
+      <button type="button" id="videoplayer" onClick={handleOpenFile}>
+        Open
+      </button>
+      <VideoControls playing={playing} onControl={handleControl} />
+      <VideoTimestamp played={played} totalDuration={totalDuration} />
       <VideoSeeker
-        currentTime={currentTime}
+        played={played}
         totalDuration={totalDuration}
         onChange={handleSeekChange}
+        onMouseUp={handleSeekMouseUp}
       />
     </div>
   );
