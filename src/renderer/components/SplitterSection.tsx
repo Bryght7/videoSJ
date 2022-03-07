@@ -1,4 +1,4 @@
-import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
+import { SyntheticEvent, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
@@ -41,14 +41,12 @@ const SplitterSection = () => {
     }
   };
 
-  const handleSeekChange = (event: ChangeEvent) => {
+  const handleSeekChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     setPlayed(parseInt(target.value, 10));
   };
 
-  const handleSeekMouseUp = (
-    event: MouseEvent<HTMLInputElement, globalThis.MouseEvent>
-  ) => {
+  const handleSeekInputUp = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     if (reactPlayer.current) {
       (reactPlayer.current as ReactPlayer)?.seekTo(parseInt(target.value, 10));
@@ -87,7 +85,8 @@ const SplitterSection = () => {
         played={played}
         totalDuration={totalDuration}
         onChange={handleSeekChange}
-        onMouseUp={handleSeekMouseUp}
+        onMouseUp={handleSeekInputUp}
+        onKeyUp={handleSeekInputUp}
       />
     </div>
   );

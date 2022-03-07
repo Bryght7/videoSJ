@@ -1,13 +1,20 @@
-import { ChangeEvent, MouseEvent } from 'react';
+import { SyntheticEvent } from 'react';
 
 type Props = {
   played: number;
   totalDuration: number;
-  onChange: (event: ChangeEvent) => void;
-  onMouseUp: (event: MouseEvent<HTMLInputElement>) => void;
+  onChange: (event: SyntheticEvent) => void;
+  onMouseUp: (event: SyntheticEvent) => void;
+  onKeyUp: (event: SyntheticEvent) => void;
 };
 
-const VideoSeeker = ({ played, totalDuration, onChange, onMouseUp }: Props) => {
+const VideoSeeker = ({
+  played,
+  totalDuration,
+  onChange,
+  onMouseUp,
+  onKeyUp,
+}: Props) => {
   return (
     <input
       className="w-full"
@@ -17,6 +24,7 @@ const VideoSeeker = ({ played, totalDuration, onChange, onMouseUp }: Props) => {
       value={played}
       onChange={onChange}
       onMouseUp={onMouseUp}
+      onKeyUp={onKeyUp}
     />
   );
 };
