@@ -77,7 +77,11 @@ const SplitterSection = () => {
       <button type="button" id="videoplayer" onClick={handleOpenFile}>
         Open
       </button>
-      <VideoControls playing={playing} onControl={handleControl} />
+      <VideoControls
+        playing={playing}
+        onControl={handleControl}
+        disabled={videoUrl === ''}
+      />
       <VideoTimestamp played={played} totalDuration={totalDuration} />
       <VideoSeeker
         played={played}

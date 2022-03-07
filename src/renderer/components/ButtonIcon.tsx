@@ -1,19 +1,17 @@
 import { ReactNode } from 'react';
 
 type Props = {
-  isDisabled?: boolean;
+  disabled?: boolean;
   onClick: () => void;
   children: ReactNode;
 };
 
-const ButtonIcon = ({ isDisabled = false, onClick, children }: Props) => {
-  console.log('rtendering button');
-
+const ButtonIcon = ({ disabled = false, onClick, children }: Props) => {
   return (
     <button
       type="button"
       className="btn-primary"
-      disabled={isDisabled || false}
+      disabled={disabled}
       onClick={onClick}
     >
       {children}
