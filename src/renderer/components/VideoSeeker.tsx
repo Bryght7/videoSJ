@@ -4,17 +4,9 @@ type Props = {
   played: number;
   totalDuration: number;
   onChange: (event: SyntheticEvent) => void;
-  onMouseUp: (event: SyntheticEvent) => void;
-  onKeyUp: (event: SyntheticEvent) => void;
 };
 
-const VideoSeeker = ({
-  played,
-  totalDuration,
-  onChange,
-  onMouseUp,
-  onKeyUp,
-}: Props) => {
+const VideoSeeker = ({ played, totalDuration, onChange }: Props) => {
   return (
     <input
       className="w-full"
@@ -23,8 +15,6 @@ const VideoSeeker = ({
       max={totalDuration}
       value={played}
       onChange={onChange}
-      onMouseUp={onMouseUp}
-      onKeyUp={onKeyUp}
     />
   );
 };

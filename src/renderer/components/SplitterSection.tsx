@@ -3,17 +3,21 @@ import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
 import VideoSeeker from './VideoSeeker';
+import VolumeSlider from './VolumeSlider';
 
 const SplitterSection = () => {
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [videoUrl, setVideoUrl] = useState('');
+  const [volume, setVolume] = useState(100);
+  const [savedVolume, setSavedVolume] = useState<number>();
 
   const reactPlayer = useRef(null);
 
   const handleOnEnded = () => {
     setPlaying(false);
+    setPlayed(totalDuration);
   };
 
   const handleOnDuration = (duration: number) => {
@@ -44,12 +48,24 @@ const SplitterSection = () => {
   const handleSeekChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     setPlayed(parseInt(target.value, 10));
-  };
-
-  const handleSeekInputUp = (event: SyntheticEvent) => {
-    const target = event.target as HTMLInputElement;
     if (reactPlayer.current) {
       (reactPlayer.current as ReactPlayer)?.seekTo(parseInt(target.value, 10));
+    }
+  };
+
+  const handleVolumeChange = (event: SyntheticEvent) => {
+    const target = event.target as HTMLInputElement;
+    setVolume(parseInt(target.value, 10));
+  };
+
+  const handleOnMute = (prevVolume: number) => {
+    setSavedVolume(prevVolume); // save previous volume to restore it later
+    setVolume(0);
+  };
+
+  const handleOnUnmute = () => {
+    if (savedVolume) {
+      setVolume(savedVolume); // restore saved volume
     }
   };
 
@@ -67,6 +83,7 @@ const SplitterSection = () => {
           ref={reactPlayer}
           url={videoUrl}
           playing={playing}
+          volume={volume / 100}
           onEnded={handleOnEnded}
           onDuration={handleOnDuration}
           onProgress={handleOnProgress}
@@ -77,6 +94,7 @@ const SplitterSection = () => {
       </button>
       <VideoControls
         playing={playing}
+        ended={!playing && played !== 0 && played === totalDuration}
         onControl={handleControl}
         disabled={videoUrl === ''}
       />
@@ -85,8 +103,13 @@ const SplitterSection = () => {
         played={played}
         totalDuration={totalDuration}
         onChange={handleSeekChange}
-        onMouseUp={handleSeekInputUp}
-        onKeyUp={handleSeekInputUp}
+      />
+      {volume}
+      <VolumeSlider
+        value={volume}
+        onChange={handleVolumeChange}
+        onMute={handleOnMute}
+        onUnmute={handleOnUnmute}
       />
     </div>
   );

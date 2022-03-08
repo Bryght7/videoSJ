@@ -9,7 +9,7 @@ const App = () => {
       <main className="h-full p-4 w-max">
         <SplitterSection />
       </main>
-      <aside className="h-full w-80">02ddd</aside>
+      <aside className="h-full w-80">Right section</aside>
     </div>
   );
 };
