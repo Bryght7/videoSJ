@@ -26,7 +26,7 @@ const VolumeSlider = ({
         onUnmute={onUnmute}
       />
       <input
-        className="w-full"
+        className="w-full ml-1"
         type="range"
         min={min}
         max={max}

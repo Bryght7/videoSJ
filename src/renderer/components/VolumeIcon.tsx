@@ -46,7 +46,7 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
         fill="#111"
       />
       <path
-        d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6"
+        d="m48,27.6a19.5,19.5 0 0 1 0,21.4m13.6,13.6"
         fill="none"
         stroke="#111"
         strokeWidth="5"
@@ -71,11 +71,11 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
         fill="#111"
       />
       <path
-        d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,48.6"
-        fill="none"
-        stroke="#111"
-        strokeWidth="5"
+        d="m48,27.6a19.5,19.5 0 0 1 0,21.4m7.1,-28.5a30,30 0 0 1 0,35.6m6.5,6.5"
         strokeLinecap="round"
+        strokeWidth="5"
+        stroke="#111"
+        fill="none"
       />
     </svg>
   );
