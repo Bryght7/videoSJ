@@ -89,28 +89,36 @@ const SplitterSection = () => {
           onProgress={handleOnProgress}
         />
       </div>
+      <div className="flex items-center justify-between w-full">
+        <VideoSeeker
+          played={played}
+          totalDuration={totalDuration}
+          onChange={handleSeekChange}
+        />
+        <div className="w-[205px] mx-2.5">
+          <VideoTimestamp played={played} totalDuration={totalDuration} />
+        </div>
+        <div className="w-28">
+          <VolumeSlider
+            value={volume}
+            onChange={handleVolumeChange}
+            onMute={handleOnMute}
+            onUnmute={handleOnUnmute}
+          />
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <VideoControls
+          playing={playing}
+          ended={!playing && played !== 0 && played === totalDuration}
+          onControl={handleControl}
+          disabled={videoUrl === ''}
+        />
+      </div>
+
       <button type="button" id="videoplayer" onClick={handleOpenFile}>
         Open
       </button>
-      <VideoControls
-        playing={playing}
-        ended={!playing && played !== 0 && played === totalDuration}
-        onControl={handleControl}
-        disabled={videoUrl === ''}
-      />
-      <VideoTimestamp played={played} totalDuration={totalDuration} />
-      <VideoSeeker
-        played={played}
-        totalDuration={totalDuration}
-        onChange={handleSeekChange}
-      />
-      {volume}
-      <VolumeSlider
-        value={volume}
-        onChange={handleVolumeChange}
-        onMute={handleOnMute}
-        onUnmute={handleOnUnmute}
-      />
     </div>
   );
 };

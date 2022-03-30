@@ -9,7 +9,7 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.0"
-      className="w-5 h-5"
+      className="w-6 h-6"
       viewBox="0 0 75 75"
       onClick={onUnmute}
     >
@@ -34,7 +34,7 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.0"
-      className="w-5 h-5"
+      className="w-6 h-6"
       viewBox="0 0 75 75"
       onClick={() => onMute(volume)}
     >
@@ -59,7 +59,7 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.0"
-      className="w-5 h-5"
+      className="w-6 h-6"
       viewBox="0 0 75 75"
       onClick={() => onMute(volume)}
     >
@@ -84,7 +84,7 @@ const VolumeIcon = ({ volume, onMute, onUnmute }: Props) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       version="1.0"
-      className="w-5 h-5"
+      className="w-6 h-6"
       viewBox="0 0 75 75"
       onClick={() => onMute(volume)}
     >
