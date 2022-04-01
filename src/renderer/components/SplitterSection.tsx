@@ -14,6 +14,8 @@ const SplitterSection = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [volume, setVolume] = useState(100);
   const [savedVolume, setSavedVolume] = useState<number>();
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
 
   const reactPlayer = useRef(null);
 
@@ -75,17 +77,24 @@ const SplitterSection = () => {
     const filePath = await window.api.openFileDialog();
     if (filePath) {
       setVideoUrl(`vsj://${filePath}`);
+      setStartTime(0);
+      setEndTime(0);
     }
   };
 
   const handleSelectStartTime = () => {
-    // TODO:implement
-    console.log(played);
+    setStartTime(played);
   };
 
   const handleSelectEndTime = () => {
-    // TODO:implement
-    console.log(played);
+    setEndTime(played);
+  };
+
+  const handleChangeTimestamp = (seconds: number) => {
+    setPlayed(seconds);
+    if (reactPlayer.current) {
+      (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
+    }
   };
 
   return (
@@ -162,7 +171,21 @@ const SplitterSection = () => {
             <path d="M13 7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z" />
           </svg>
         </ButtonIcon>
-        <InputTimestamp />
+        <div className="flex items-center space-x-1">
+          <InputTimestamp
+            seconds={startTime}
+            maxLength={12}
+            disabled={videoUrl === ''}
+            onChange={(seconds) => handleChangeTimestamp(seconds)}
+          />
+          <span>to</span>
+          <InputTimestamp
+            seconds={endTime}
+            maxLength={12}
+            disabled={videoUrl === ''}
+            onChange={(seconds) => handleChangeTimestamp(seconds)}
+          />
+        </div>
       </div>
 
       <button type="button" id="videoplayer" onClick={handleOpenFile}>

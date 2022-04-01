@@ -1,8 +1,10 @@
-import { KeyboardEvent, useState } from 'react';
+import { KeyboardEvent, useEffect, useState } from 'react';
 
 type Props = {
-  initialValue?: string;
-  eventProp: () => void;
+  seconds: number;
+  maxLength?: number;
+  disabled?: boolean;
+  onChange: (seconds: number) => void;
 };
 
 const replaceAt = (str: string, index: number, replacement: string) =>
@@ -11,8 +13,9 @@ const replaceAt = (str: string, index: number, replacement: string) =>
   str.substring(index + replacement.length);
 
 const deleteCharacter = (source: string, at: number) => {
-  // if "12:34:56.789" deleting at "5", then initial array is "12:34:"
+  // if deleting at "5" from source "12:34:56.789", then initial array will be "12:34:"
   const newStringArray = Array.from(source).map((e, i) => (i >= at ? '' : e));
+  // basically erase 1 character then shift all next characters to cursor, while keeping the ":" and "."
   for (let i = at + 1; i < 12; i++) {
     if (source.charAt(i) !== ':' && source.charAt(i) !== '.') {
       newStringArray[i - 1] = source.charAt(i);
@@ -22,15 +25,43 @@ const deleteCharacter = (source: string, at: number) => {
       i += 1;
     }
   }
-  // replace all empty strings with zeros, and convert back to string
+  // filling any empty ending with zeros, and return string
   return newStringArray.map((e) => (e === '' ? '0' : e)).join('');
 };
 
+const secondsToTimestamp = (seconds: number) => {
+  const hh = Math.floor(seconds / 60 / 60);
+  const mm = Math.floor(seconds / 60) - hh * 60;
+  const ss = Math.floor(seconds % 60);
+  return `${hh.toString().padStart(2, '0')}:${mm
+    .toString()
+    .padStart(2, '0')}:${ss.toString().padStart(2, '0')}`;
+};
+
+const timestampToSeconds = (timestamp: string) => {
+  const hh: string = timestamp.split(':')[0];
+  const mm: string = timestamp.split(':')[1];
+  const ss: string = timestamp.split(':')[2].split('.')[0];
+  const ms: string = timestamp.split(':')[2].split('.')[1];
+  return (
+    parseInt(hh, 10) * 60 * 60 +
+    parseInt(mm, 10) * 60 +
+    parseInt(ss, 10) +
+    parseInt(ms, 10) / 1000
+  );
+};
+
 const InputTimestamp = ({
-  initialValue = '00:00:00.000',
-  eventProp,
+  seconds,
+  maxLength,
+  disabled = false,
+  onChange,
 }: Props) => {
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState('');
+
+  useEffect(() => {
+    setValue(`${secondsToTimestamp(seconds)}.000`);
+  }, [seconds]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
@@ -52,7 +83,9 @@ const InputTimestamp = ({
         );
       }
       const caretPosition = target.selectionStart; // remember caret position
-      setValue(replaceAt(value, target.selectionStart - 1, '0')); // overwrite previous character
+      const newValue = replaceAt(value, target.selectionStart - 1, '0');
+      setValue(newValue); // overwrite previous character
+      onChange(timestampToSeconds(newValue));
       setTimeout(() => {
         // move caret to previous character
         target.setSelectionRange(caretPosition - 1, caretPosition - 1);
@@ -63,6 +96,7 @@ const InputTimestamp = ({
       target.selectionStart < 12
     ) {
       // if not deleting at the end
+      event.preventDefault();
       if (
         target.selectionStart === 2 ||
         target.selectionStart === 5 ||
@@ -75,12 +109,13 @@ const InputTimestamp = ({
         );
       }
       const caretPosition = target.selectionStart; // remember caret position
-      setValue(deleteCharacter(value, caretPosition));
+      const newValue = deleteCharacter(value, caretPosition);
+      setValue(newValue);
+      onChange(timestampToSeconds(newValue));
       setTimeout(() => {
         // move caret to next character
         target.setSelectionRange(caretPosition, caretPosition);
       });
-      event.preventDefault();
     }
   };
 
@@ -93,6 +128,7 @@ const InputTimestamp = ({
     }
     if (target.selectionStart !== null && target.selectionStart < 12) {
       // if not writing at the very end
+      event.preventDefault();
       if (
         target.selectionStart === 2 ||
         target.selectionStart === 5 ||
@@ -105,26 +141,27 @@ const InputTimestamp = ({
         );
       }
       const caretPosition = target.selectionStart; // remember caret position
-      setValue(replaceAt(value, target.selectionStart, event.key)); // overwrite next character
+      const newValue = replaceAt(value, target.selectionStart, event.key);
+      setValue(newValue); // overwrite next character
+      onChange(timestampToSeconds(newValue));
       setTimeout(() => {
         // move caret to next character
         target.setSelectionRange(caretPosition + 1, caretPosition + 1);
       });
-      event.preventDefault();
     }
   };
 
   return (
     <input
+      className="pl-2.5 border border-gray-500 rounded-md w-28 focus:border-blue-700 focus:outline-none focus-visible:ring disabled:border-gray-400 disabled:text-gray-400 disabled:select-none disabled:cursor-not-allowed"
       type="text"
-      maxLength={12}
+      maxLength={maxLength}
       value={value}
+      disabled={disabled}
       onKeyPress={handleKeyPress}
       onKeyDown={handleKeyDown}
     />
   );
-
-  // TODO: implement onChange cascading event to parent, seek video to value
 };
 
 export default InputTimestamp;
