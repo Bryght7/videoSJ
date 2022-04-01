@@ -9,6 +9,7 @@ module.exports = {
     // Custom
     'react/require-default-props': 'off',
     'jsx-a11y/media-has-caption': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
   },
   parserOptions: {
     ecmaVersion: 2020,

@@ -4,6 +4,8 @@ import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
 import VideoSeeker from './VideoSeeker';
 import VolumeSlider from './VolumeSlider';
+import ButtonIcon from './ButtonIcon';
+import InputTimestamp from './InputTimestamp';
 
 const SplitterSection = () => {
   const [playing, setPlaying] = useState(false);
@@ -76,6 +78,16 @@ const SplitterSection = () => {
     }
   };
 
+  const handleSelectStartTime = () => {
+    // TODO:implement
+    console.log(played);
+  };
+
+  const handleSelectEndTime = () => {
+    // TODO:implement
+    console.log(played);
+  };
+
   return (
     <div>
       <div className="mb-2 bg-black">
@@ -107,13 +119,50 @@ const SplitterSection = () => {
           />
         </div>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex">
         <VideoControls
           playing={playing}
           ended={!playing && played !== 0 && played === totalDuration}
           onControl={handleControl}
           disabled={videoUrl === ''}
         />
+        <ButtonIcon
+          disabled={videoUrl === ''}
+          title="Select start time"
+          onClick={() => handleSelectStartTime()}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            className="w-5 h-5"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fillRule="evenodd"
+              d="M1.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5z"
+            />
+            <path d="M3 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z" />
+          </svg>
+        </ButtonIcon>
+        <ButtonIcon
+          disabled={videoUrl === ''}
+          title="Select end time"
+          onClick={() => handleSelectEndTime()}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            className="w-5 h-5"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fillRule="evenodd"
+              d="M14.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 1 0v-13a.5.5 0 0 0-.5-.5z"
+            />
+            <path d="M13 7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z" />
+          </svg>
+        </ButtonIcon>
+        <InputTimestamp />
       </div>
 
       <button type="button" id="videoplayer" onClick={handleOpenFile}>
