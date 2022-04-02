@@ -5,6 +5,8 @@ type Props = {
   maxLength?: number;
   disabled?: boolean;
   onChange: (seconds: number) => void;
+  invalid?: boolean;
+  invalidTitle?: string;
 };
 
 const replaceAt = (str: string, index: number, replacement: string) =>
@@ -56,6 +58,8 @@ const InputTimestamp = ({
   maxLength,
   disabled = false,
   onChange,
+  invalid = false,
+  invalidTitle = undefined,
 }: Props) => {
   const [value, setValue] = useState('');
 
@@ -151,10 +155,19 @@ const InputTimestamp = ({
     }
   };
 
+  let classes =
+    'pl-2.5 border rounded-md w-28 focus:outline-none focus-visible:ring disabled:border-gray-400 disabled:text-gray-400 disabled:select-none disabled:cursor-not-allowed';
+  if (invalid) {
+    classes += ' text-red-600 border-red-500 focus:border-red-700';
+  } else {
+    classes += ' border-gray-500 focus:border-blue-700';
+  }
+
   return (
     <input
-      className="pl-2.5 border border-gray-500 rounded-md w-28 focus:border-blue-700 focus:outline-none focus-visible:ring disabled:border-gray-400 disabled:text-gray-400 disabled:select-none disabled:cursor-not-allowed"
+      className={classes}
       type="text"
+      title={invalid ? invalidTitle : undefined}
       maxLength={maxLength}
       value={value}
       disabled={disabled}

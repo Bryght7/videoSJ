@@ -90,11 +90,24 @@ const SplitterSection = () => {
     setEndTime(played);
   };
 
-  const handleChangeTimestamp = (seconds: number) => {
+  const handleChangeStartTime = (seconds: number) => {
+    setStartTime(seconds);
     setPlayed(seconds);
     if (reactPlayer.current) {
       (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
     }
+  };
+
+  const handleChangeEndTime = (seconds: number) => {
+    setEndTime(seconds);
+    setPlayed(seconds);
+    if (reactPlayer.current) {
+      (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
+    }
+  };
+
+  const handleAddToParts = () => {
+    console.error('unimp');
   };
 
   return (
@@ -176,15 +189,31 @@ const SplitterSection = () => {
             seconds={startTime}
             maxLength={12}
             disabled={videoUrl === ''}
-            onChange={(seconds) => handleChangeTimestamp(seconds)}
+            onChange={(seconds) => handleChangeStartTime(seconds)}
           />
           <span>to</span>
           <InputTimestamp
             seconds={endTime}
             maxLength={12}
             disabled={videoUrl === ''}
-            onChange={(seconds) => handleChangeTimestamp(seconds)}
+            invalid={startTime !== 0 && endTime !== 0 && endTime <= startTime}
+            invalidTitle="End time must be greater than start time"
+            onChange={(seconds) => handleChangeEndTime(seconds)}
           />
+          <ButtonIcon
+            disabled={videoUrl === '' || endTime <= startTime}
+            title="Add to parts"
+            onClick={() => handleAddToParts()}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              className="w-6 h-6"
+              viewBox="1 1 14 14"
+            >
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+            </svg>
+          </ButtonIcon>
         </div>
       </div>
 
