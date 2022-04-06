@@ -7,7 +7,11 @@ import VolumeSlider from './VolumeSlider';
 import ButtonIcon from './ButtonIcon';
 import InputTimestamp from './InputTimestamp';
 
-const SplitterSection = () => {
+type Props = {
+  onSplit: (startTime: number, endTime: number) => void;
+};
+
+const SplitterSection = ({ onSplit }: Props) => {
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -107,7 +111,7 @@ const SplitterSection = () => {
   };
 
   const handleAddToParts = () => {
-    console.error('unimp');
+    onSplit(startTime, endTime);
   };
 
   return (
