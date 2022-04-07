@@ -35,9 +35,10 @@ const secondsToTimestamp = (seconds: number) => {
   const hh = Math.floor(seconds / 60 / 60);
   const mm = Math.floor(seconds / 60) - hh * 60;
   const ss = Math.floor(seconds % 60);
+  const ms = seconds.toString().split('.')[1] || '0';
   return `${hh.toString().padStart(2, '0')}:${mm
     .toString()
-    .padStart(2, '0')}:${ss.toString().padStart(2, '0')}`;
+    .padStart(2, '0')}:${ss.toString().padStart(2, '0')}.${ms.padEnd(3, '0')}`;
 };
 
 const timestampToSeconds = (timestamp: string) => {
@@ -64,7 +65,7 @@ const InputTimestamp = ({
   const [value, setValue] = useState('');
 
   useEffect(() => {
-    setValue(`${secondsToTimestamp(seconds)}.000`);
+    setValue(`${secondsToTimestamp(seconds)}`);
   }, [seconds]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
