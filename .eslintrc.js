@@ -9,6 +9,7 @@ module.exports = {
     // Custom
     'react/require-default-props': 'off',
     'jsx-a11y/media-has-caption': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
   },
   parserOptions: {
