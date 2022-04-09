@@ -5,16 +5,17 @@ import PartList from './PartList';
 type Props = {
   parts: Part[];
   onReorder: (result: DropResult) => void;
+  onDelete: (index: number) => void;
 };
 
-const JoinerSection = ({ parts, onReorder }: Props) => {
+const JoinerSection = ({ parts, onReorder, onDelete }: Props) => {
   const onDragEnd = (result: DropResult) => {
     onReorder(result);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <PartList parts={parts} />
+      <PartList parts={parts} onDelete={onDelete} />
     </DragDropContext>
   );
 };

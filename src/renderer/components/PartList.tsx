@@ -4,21 +4,19 @@ import PartElement from './PartElement';
 
 type Props = {
   parts: Part[];
+  onDelete: (index: number) => void;
 };
 
-const PartList = ({ parts }: Props) => {
+const PartList = ({ parts, onDelete }: Props) => {
   return (
     <Droppable droppableId="droppable-1">
       {(provided) => (
-        <div ref={provided.innerRef} className="border-2 border-red-500 h-96">
+        <div
+          ref={provided.innerRef}
+          className="h-[360px] overflow-y-auto space-y-2"
+        >
           {parts.map((p, i) => (
-            <PartElement
-              key={p.id}
-              id={p.id}
-              index={i}
-              startTime={p.startTime}
-              endTime={p.endTime}
-            />
+            <PartElement key={p.id} index={i} onDelete={onDelete} part={p} />
           ))}
           {provided.placeholder}
         </div>

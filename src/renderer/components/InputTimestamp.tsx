@@ -38,7 +38,9 @@ const secondsToTimestamp = (seconds: number) => {
   const ms = seconds.toString().split('.')[1] || '0';
   return `${hh.toString().padStart(2, '0')}:${mm
     .toString()
-    .padStart(2, '0')}:${ss.toString().padStart(2, '0')}.${ms.padEnd(3, '0')}`;
+    .padStart(2, '0')}:${ss.toString().padStart(2, '0')}.${ms
+    .padEnd(3, '0')
+    .substring(0, 3)}`;
 };
 
 const timestampToSeconds = (timestamp: string) => {
