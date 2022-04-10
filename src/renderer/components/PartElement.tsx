@@ -27,7 +27,7 @@ const PartElement = ({ index, part, onDelete }: Props) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className={`flex justify-between items-center px-4 h-8 ${part.bgColor}`}
+          className="flex items-center justify-between h-8 px-4 rounded-md bg-slate-300"
         >
           <p className="font-semibold">#{index + 1}</p>
           <p className="flex items-center">

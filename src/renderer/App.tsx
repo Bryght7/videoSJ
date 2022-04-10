@@ -15,43 +15,16 @@ const reorder = (list: Part[], startIndex: number, endIndex: number) => {
 };
 
 const App = () => {
+  const [videoUrl, setVideoUrl] = useState('');
   const [parts, setParts] = useState<Part[]>([]);
 
   const handleOnSplit = (startTime: number, endTime: number) => {
-    let bgColor: string;
-    switch (parts.length % 7) {
-      case 0:
-        bgColor = 'bg-red-300';
-        break;
-      case 1:
-        bgColor = 'bg-green-300';
-        break;
-      case 2:
-        bgColor = 'bg-violet-300';
-        break;
-      case 3:
-        bgColor = 'bg-orange-300';
-        break;
-      case 4:
-        bgColor = 'bg-pink-300';
-        break;
-      case 5:
-        bgColor = 'bg-yellow-300';
-        break;
-      case 6:
-        bgColor = 'bg-blue-300';
-        break;
-      default:
-        bgColor = 'bg-stone-300';
-    }
-
     setParts((oldParts) => [
       ...oldParts,
       {
         id: `id${Math.random().toString(16).slice(2)}`,
         startTime,
         endTime,
-        bgColor,
       },
     ]);
   };
@@ -80,16 +53,38 @@ const App = () => {
     setParts(newParts);
   };
 
+  const handleOnVideoLoad = (filePath: string) => {
+    setVideoUrl(`vsj://${filePath}`);
+  };
+
+  const handleOnSplitJoin = async () => {
+    const filePath = await window.api.saveFileDialog();
+    if (filePath) {
+      const createdInputFile = await window.api.createInputFile(
+        videoUrl,
+        parts
+      );
+      if (createdInputFile) {
+        console.log(createdInputFile);
+      }
+    }
+  };
+
   return (
     <div className="flex justify-between h-screen">
       <main className="h-full px-4 pt-4 w-max">
-        <SplitterSection onSplit={handleOnSplit} />
+        <SplitterSection
+          videoUrl={videoUrl}
+          onSplit={handleOnSplit}
+          onVideoLoad={handleOnVideoLoad}
+        />
       </main>
       <aside className="w-full h-full pt-4 pr-4">
         <JoinerSection
           parts={parts}
           onReorder={handleOnReorder}
           onDelete={handleOnDelete}
+          onSplitJoin={handleOnSplitJoin}
         />
       </aside>
     </div>

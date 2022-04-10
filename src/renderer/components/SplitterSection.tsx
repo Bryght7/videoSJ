@@ -8,14 +8,15 @@ import ButtonIcon from './ButtonIcon';
 import InputTimestamp from './InputTimestamp';
 
 type Props = {
+  videoUrl: string;
   onSplit: (startTime: number, endTime: number) => void;
+  onVideoLoad: (filePath: string) => void;
 };
 
-const SplitterSection = ({ onSplit }: Props) => {
+const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
-  const [videoUrl, setVideoUrl] = useState('');
   const [volume, setVolume] = useState(100);
   const [savedVolume, setSavedVolume] = useState<number>();
   const [startTime, setStartTime] = useState(0);
@@ -80,7 +81,7 @@ const SplitterSection = ({ onSplit }: Props) => {
   const handleOpenFile = async () => {
     const filePath = await window.api.openFileDialog();
     if (filePath) {
-      setVideoUrl(`vsj://${filePath}`);
+      onVideoLoad(filePath);
       setStartTime(0);
       setEndTime(0);
     }

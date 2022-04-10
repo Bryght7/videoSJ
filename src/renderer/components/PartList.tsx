@@ -13,7 +13,7 @@ const PartList = ({ parts, onDelete }: Props) => {
       {(provided) => (
         <div
           ref={provided.innerRef}
-          className="h-[360px] overflow-y-auto space-y-2"
+          className="h-[360px] overflow-y-scroll space-y-2 pr-1"
         >
           {parts.map((p, i) => (
             <PartElement key={p.id} index={i} onDelete={onDelete} part={p} />
