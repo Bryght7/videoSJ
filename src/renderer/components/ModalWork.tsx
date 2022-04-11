@@ -16,7 +16,7 @@ const ModalWork = ({
   onClose,
 }: Props) => {
   return (
-    <div className="fixed z-10 w-full h-full backdrop-blur-sm">
+    <div className="fixed z-20 w-full h-full backdrop-blur-sm">
       <div className="flex flex-col items-center justify-center fixed left-[275px] top-[90px] mx-auto bg-white w-[470px] h-[300px] drop-shadow-2xl">
         {working && <ModalWorkLoading />}
         {!working &&

@@ -143,7 +143,8 @@ const createWindow = async () => {
 const handleOpenFile = async () => {
   if (mainWindow) {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
-      filters: [{ name: 'Movies', extensions: ['mp4', 'avi', 'mkv'] }],
+      // Accepted types (🔎 for other references)
+      filters: [{ name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] }],
     });
 
     return canceled ? null : filePaths[0];
@@ -154,7 +155,8 @@ const handleOpenFile = async () => {
 const handleSaveFile = async () => {
   if (mainWindow) {
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-      filters: [{ name: 'Movies', extensions: ['mp4', 'avi', 'mkv'] }],
+      // Accepted types (🔎 for other references)
+      filters: [{ name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] }],
     });
     return canceled ? null : filePath;
   }

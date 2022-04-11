@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState, DragEvent } from 'react';
 import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
@@ -6,6 +6,7 @@ import VideoSeeker from './VideoSeeker';
 import VolumeSlider from './VolumeSlider';
 import ButtonIcon from './ButtonIcon';
 import InputTimestamp from './InputTimestamp';
+import DropZone from './DropZone';
 
 type Props = {
   videoUrl: string;
@@ -115,6 +116,12 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
     onSplit(startTime, endTime);
   };
 
+  const handleOnDropVideo = (file: File) => {
+    onVideoLoad(file.path);
+    setStartTime(0);
+    setEndTime(0);
+  };
+
   useEffect(() => {
     window.api.menuOpenFile(() => {
       handleOpenFile();
@@ -125,6 +132,10 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
   return (
     <>
       <div className="mb-2 bg-black">
+        <DropZone
+          acceptedTypes={['video/mp4', 'video/m4v', 'video/avi', 'video/mkv']}
+          onDrop={handleOnDropVideo}
+        />
         <ReactPlayer
           ref={reactPlayer}
           url={videoUrl}
