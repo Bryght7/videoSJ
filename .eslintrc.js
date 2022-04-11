@@ -11,6 +11,7 @@ module.exports = {
     'jsx-a11y/media-has-caption': 'off',
     'react/jsx-props-no-spreading': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

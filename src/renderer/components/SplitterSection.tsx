@@ -116,7 +116,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
   };
 
   return (
-    <div>
+    <>
       <div className="mb-2 bg-black">
         <ReactPlayer
           ref={reactPlayer}
@@ -146,7 +146,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
           />
         </div>
       </div>
-      <div className="flex">
+      <div className="flex space-x-1">
         <VideoControls
           playing={playing}
           ended={!playing && played !== 0 && played === totalDuration}
@@ -235,7 +235,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
       <button type="button" id="videoplayer" onClick={handleOpenFile}>
         Open
       </button>
-    </div>
+    </>
   );
 };
 

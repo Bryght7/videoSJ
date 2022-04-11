@@ -16,7 +16,7 @@ const ButtonIcon = ({
   return (
     <button
       type="button"
-      className="btn-primary"
+      className="btn btn-primary"
       disabled={disabled}
       title={title}
       onClick={onClick}

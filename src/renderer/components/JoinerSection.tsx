@@ -15,19 +15,19 @@ const JoinerSection = ({ parts, onReorder, onDelete, onSplitJoin }: Props) => {
   };
 
   return (
-    <div>
+    <>
       <DragDropContext onDragEnd={onDragEnd}>
         <PartList parts={parts} onDelete={onDelete} />
       </DragDropContext>
       <button
-        className="w-full mt-1.5 h-[70px] btn-primary"
+        className="w-full mt-1.5 h-[70px] btn btn-primary"
         type="button"
         disabled={parts.length < 1}
         onClick={() => onSplitJoin()}
       >
         Split & Join
       </button>
-    </div>
+    </>
   );
 };
 

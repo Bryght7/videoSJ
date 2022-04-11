@@ -6,6 +6,7 @@ import 'tailwindcss/tailwind.css';
 import SplitterSection from './components/SplitterSection';
 import Part from './Part.type';
 import JoinerSection from './components/JoinerSection';
+import ModalWork from './components/ModalWork';
 
 const reorder = (list: Part[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -17,6 +18,11 @@ const reorder = (list: Part[], startIndex: number, endIndex: number) => {
 const App = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [parts, setParts] = useState<Part[]>([]);
+  const [showingModal, setShowingModal] = useState(false);
+  const [working, setWorking] = useState(false);
+  const [successWork, setSuccessWork] = useState(false);
+  const [secondsElapsed, setSecondsElapsed] = useState<string>('');
+  const [outputFilePath, setOutputFilePath] = useState<string>('');
 
   const handleOnSplit = (startTime: number, endTime: number) => {
     setParts((oldParts) => [
@@ -55,23 +61,48 @@ const App = () => {
 
   const handleOnVideoLoad = (filePath: string) => {
     setVideoUrl(`vsj://${filePath}`);
+    setParts([]);
   };
 
   const handleOnSplitJoin = async () => {
-    const filePath = await window.api.saveFileDialog();
-    if (filePath) {
-      const createdInputFile = await window.api.createInputFile(
-        videoUrl,
-        parts
-      );
-      if (createdInputFile) {
-        console.log(createdInputFile);
+    const outputFilePathTmp = await window.api.saveFileDialog();
+    if (outputFilePathTmp) {
+      setOutputFilePath(outputFilePathTmp);
+      const start = performance.now();
+      setWorking(true);
+      setShowingModal(true);
+      const inputFilePath = await window.api.createInputFile(videoUrl, parts);
+      if (inputFilePath) {
+        const doneWork = await window.api.splitJoin(outputFilePathTmp);
+        const end = performance.now();
+        setSecondsElapsed(((end - start) / 1000).toFixed(2));
+        setSuccessWork(doneWork);
+        setWorking(false);
       }
+    }
+  };
+
+  const handleOnCloseModal = async (reason?: string) => {
+    switch (reason) {
+      case 'openOutputDir':
+        setShowingModal(false);
+        window.api.openOutputDir(outputFilePath);
+        break;
+      default:
+        setShowingModal(false);
     }
   };
 
   return (
     <div className="flex justify-between h-screen">
+      {showingModal && (
+        <ModalWork
+          working={working}
+          successWork={successWork}
+          secondsElapsed={secondsElapsed}
+          onClose={handleOnCloseModal}
+        />
+      )}
       <main className="h-full px-4 pt-4 w-max">
         <SplitterSection
           videoUrl={videoUrl}

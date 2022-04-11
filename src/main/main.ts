@@ -11,7 +11,10 @@
 import path from 'path';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
-
+import pathToFfmpeg from 'ffmpeg-static';
+// @ts-ignore
+import shellEscape from 'any-shell-escape';
+import util from 'util';
 import { app, BrowserWindow, dialog, ipcMain, protocol, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
@@ -40,6 +43,8 @@ declare global {
         videoUrl: string,
         parts: Part[]
       ) => Promise<string | null>;
+      splitJoin: (outputFilePath: string) => Promise<boolean>;
+      openOutputDir: (outputFilePath: string) => void;
     };
   }
 }
@@ -136,6 +141,7 @@ const handleOpenFile = async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
       filters: [{ name: 'Movies', extensions: ['mp4', 'avi', 'mkv'] }],
     });
+
     return canceled ? null : filePaths[0];
   }
   return null;
@@ -175,6 +181,39 @@ const handleCreateInputFile = async (videoUrl: string, parts: Part[]) => {
   return inputFilePath;
 };
 
+const handleSplitJoin = async (outputFilePath: string) => {
+  const inputFilePath = path.join(
+    app.getPath('appData'),
+    'VideoSJ',
+    'input.txt'
+  );
+  const task = shellEscape([
+    pathToFfmpeg,
+    '-y',
+    '-f',
+    'concat',
+    '-safe',
+    '0',
+    '-i',
+    inputFilePath,
+    '-c',
+    'copy',
+    outputFilePath,
+  ]);
+  const exec = util.promisify(require('child_process').exec);
+  try {
+    await exec(task);
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+  return true;
+};
+
+const handleOpenOutputDir = (outputFilePath: string) => {
+  shell.showItemInFolder(outputFilePath);
+};
+
 /**
  * Add event listeners...
  */
@@ -200,6 +239,12 @@ app
     ipcMain.handle('save-file-dialog', handleSaveFile);
     ipcMain.handle('create-input-file', (event, videoUrl, parts) =>
       handleCreateInputFile(videoUrl, parts)
+    );
+    ipcMain.handle('split-join', (event, outputFilePath) =>
+      handleSplitJoin(outputFilePath)
+    );
+    ipcMain.handle('open-output-dir', (event, outputFilePath) =>
+      handleOpenOutputDir(outputFilePath)
     );
 
     app.on('activate', () => {
