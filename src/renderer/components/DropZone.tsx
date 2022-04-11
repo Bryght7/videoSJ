@@ -1,11 +1,11 @@
 import { DragEvent, useState } from 'react';
 
 type Props = {
-  acceptedTypes: string[];
+  acceptedTypes?: string[];
   onDrop: (file: File) => void;
 };
 
-const DropZone = ({ acceptedTypes, onDrop }: Props) => {
+const DropZone = ({ acceptedTypes = undefined, onDrop }: Props) => {
   const [dragging, setDragging] = useState(false);
 
   const handleOnDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -28,8 +28,10 @@ const DropZone = ({ acceptedTypes, onDrop }: Props) => {
   const handleOnDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragging(false);
-    // Accepted types (🔎 for other references)
-    if (acceptedTypes.includes(event.dataTransfer.files[0].type)) {
+    if (
+      acceptedTypes === undefined ||
+      acceptedTypes.includes(event.dataTransfer.files[0].type)
+    ) {
       onDrop(event.dataTransfer.files[0]);
     }
   };
