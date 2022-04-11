@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useRef, useState, DragEvent } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
@@ -66,16 +66,22 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
   const handleVolumeChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
     setVolume(parseInt(target.value, 10));
+    window.localStorage.setItem('volume', target.value);
   };
 
   const handleOnMute = (prevVolume: number) => {
     setSavedVolume(prevVolume); // save previous volume to restore it later
     setVolume(0);
+    window.localStorage.setItem('volume', '0');
   };
 
   const handleOnUnmute = () => {
     if (savedVolume) {
       setVolume(savedVolume); // restore saved volume
+      window.localStorage.setItem('volume', savedVolume.toString());
+    } else {
+      setVolume(100);
+      window.localStorage.setItem('volume', '100');
     }
   };
 
@@ -126,8 +132,12 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
     window.api.menuOpenFile(() => {
       handleOpenFile();
     });
+    const storedVolume = window.localStorage.getItem('volume');
+    if (storedVolume) {
+      setVolume(parseInt(storedVolume, 10));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // using [] to execute only once
 
   return (
     <>
@@ -164,7 +174,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
           />
         </div>
       </div>
-      <div className="flex space-x-1">
+      <div className="flex space-x-2">
         <VideoControls
           playing={playing}
           ended={!playing && played !== 0 && played === totalDuration}
