@@ -37,6 +37,7 @@ export default class AppUpdater {
 declare global {
   interface Window {
     api: {
+      // Renderer to main
       openFileDialog: () => Promise<string | null>;
       saveFileDialog: () => Promise<string | null | undefined>;
       createInputFile: (
@@ -45,6 +46,9 @@ declare global {
       ) => Promise<string | null>;
       splitJoin: (outputFilePath: string) => Promise<boolean>;
       openOutputDir: (outputFilePath: string) => void;
+
+      // Main to renderer
+      menuOpenFile: (callback: () => void) => void;
     };
   }
 }
@@ -92,7 +96,7 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     show: false,
     width: 1024,
-    height: 600,
+    height: 520,
     resizable: false,
     icon: getAssetPath('icon.png'),
     webPreferences: {

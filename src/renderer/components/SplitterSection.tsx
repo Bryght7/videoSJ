@@ -1,4 +1,4 @@
-import { SyntheticEvent, useRef, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
@@ -114,6 +114,13 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
   const handleAddToParts = () => {
     onSplit(startTime, endTime);
   };
+
+  useEffect(() => {
+    window.api.menuOpenFile(() => {
+      handleOpenFile();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -231,10 +238,6 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
           </ButtonIcon>
         </div>
       </div>
-
-      <button type="button" id="videoplayer" onClick={handleOpenFile}>
-        Open
-      </button>
     </>
   );
 };
