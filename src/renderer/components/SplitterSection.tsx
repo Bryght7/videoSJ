@@ -10,11 +10,17 @@ import DropZone from './DropZone';
 
 type Props = {
   videoUrl: string;
+  loadTimestamp: number;
   onSplit: (startTime: number, endTime: number) => void;
   onVideoLoad: (filePath: string) => void;
 };
 
-const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
+const SplitterSection = ({
+  videoUrl,
+  loadTimestamp,
+  onSplit,
+  onVideoLoad,
+}: Props) => {
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -138,6 +144,13 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // using [] to execute only once
+
+  useEffect(() => {
+    setPlayed(loadTimestamp);
+    if (reactPlayer.current) {
+      (reactPlayer.current as ReactPlayer)?.seekTo(loadTimestamp);
+    }
+  }, [loadTimestamp]);
 
   return (
     <>

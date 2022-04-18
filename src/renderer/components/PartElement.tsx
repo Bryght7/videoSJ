@@ -5,6 +5,7 @@ type Props = {
   index: number;
   part: Part;
   onDelete: (index: number) => void;
+  onClick: (index: number) => void;
 };
 
 const secondsToTimestamp = (seconds: number) => {
@@ -19,7 +20,7 @@ const secondsToTimestamp = (seconds: number) => {
     .substring(0, 3)}`;
 };
 
-const PartElement = ({ index, part, onDelete }: Props) => {
+const PartElement = ({ index, part, onDelete, onClick }: Props) => {
   return (
     <Draggable draggableId={part.id} index={index}>
       {(provided) => (
@@ -28,6 +29,8 @@ const PartElement = ({ index, part, onDelete }: Props) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           className="flex items-center justify-between h-8 px-4 rounded-md bg-slate-300 dark:bg-zinc-600 dark:text-zinc-300"
+          aria-hidden="true"
+          onClick={() => onClick(index)}
         >
           <p className="font-semibold">#{index + 1}</p>
           <p className="flex items-center">

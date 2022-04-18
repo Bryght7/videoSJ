@@ -6,10 +6,17 @@ type Props = {
   parts: Part[];
   onReorder: (result: DropResult) => void;
   onDelete: (index: number) => void;
+  onClick: (index: number) => void;
   onSplitJoin: () => void;
 };
 
-const JoinerSection = ({ parts, onReorder, onDelete, onSplitJoin }: Props) => {
+const JoinerSection = ({
+  parts,
+  onReorder,
+  onDelete,
+  onClick,
+  onSplitJoin,
+}: Props) => {
   const onDragEnd = (result: DropResult) => {
     onReorder(result);
   };
@@ -17,7 +24,7 @@ const JoinerSection = ({ parts, onReorder, onDelete, onSplitJoin }: Props) => {
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <PartList parts={parts} onDelete={onDelete} />
+        <PartList parts={parts} onDelete={onDelete} onClick={onClick} />
       </DragDropContext>
       <button
         className="w-full mt-1.5 h-[70px] btn btn-primary"

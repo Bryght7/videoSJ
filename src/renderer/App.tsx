@@ -26,6 +26,7 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem('darkMode') === 'true' || false
   );
+  const [loadTimestamp, setLoadTimestamp] = useState(0);
 
   useEffect(() => {
     localStorage.setItem('darkMode', darkMode.toString());
@@ -67,10 +68,14 @@ const App = () => {
     setParts(newParts);
   };
 
-  const handleOnDelete = (index: number) => {
+  const handleOnPartDelete = (index: number) => {
     const newParts = [...parts]; // copy
     newParts.splice(index, 1);
     setParts(newParts);
+  };
+
+  const handleOnPartClick = (index: number) => {
+    setLoadTimestamp(parts[index].startTime);
   };
 
   const handleOnVideoLoad = (filePath: string) => {
@@ -122,6 +127,7 @@ const App = () => {
         <main className="h-full px-4 pt-4 w-max">
           <SplitterSection
             videoUrl={videoUrl}
+            loadTimestamp={loadTimestamp}
             onSplit={handleOnSplit}
             onVideoLoad={handleOnVideoLoad}
           />
@@ -130,7 +136,8 @@ const App = () => {
           <JoinerSection
             parts={parts}
             onReorder={handleOnReorder}
-            onDelete={handleOnDelete}
+            onDelete={handleOnPartDelete}
+            onClick={handleOnPartClick}
             onSplitJoin={handleOnSplitJoin}
           />
         </aside>
