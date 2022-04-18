@@ -62,6 +62,7 @@ const App = () => {
   const handleOnVideoLoad = (filePath: string) => {
     setVideoUrl(`vsj://${filePath}`);
     setParts([]);
+    document.title = `VideoSJ - ${filePath.replace(/^.*[\\/]/, '')}`;
   };
 
   const handleOnSplitJoin = async () => {
