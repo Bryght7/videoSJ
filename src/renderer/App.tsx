@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import icon from '../../assets/icon.svg';
 import './App.css';
@@ -23,6 +23,20 @@ const App = () => {
   const [successWork, setSuccessWork] = useState(false);
   const [secondsElapsed, setSecondsElapsed] = useState<string>('');
   const [outputFilePath, setOutputFilePath] = useState<string>('');
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true' || false
+  );
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, [darkMode]);
+
+  useEffect(() => {
+    window.api.menuToggleDarkMode(() => {
+      setDarkMode((prevToggle) => !prevToggle);
+    });
+    // using [] to execute only once
+  }, []);
 
   const handleOnSplit = (startTime: number, endTime: number) => {
     setParts((oldParts) => [
@@ -95,30 +109,32 @@ const App = () => {
   };
 
   return (
-    <div className="flex justify-between h-screen">
-      {showingModal && (
-        <ModalWork
-          working={working}
-          successWork={successWork}
-          secondsElapsed={secondsElapsed}
-          onClose={handleOnCloseModal}
-        />
-      )}
-      <main className="h-full px-4 pt-4 w-max">
-        <SplitterSection
-          videoUrl={videoUrl}
-          onSplit={handleOnSplit}
-          onVideoLoad={handleOnVideoLoad}
-        />
-      </main>
-      <aside className="w-full h-full pt-4 pr-4">
-        <JoinerSection
-          parts={parts}
-          onReorder={handleOnReorder}
-          onDelete={handleOnDelete}
-          onSplitJoin={handleOnSplitJoin}
-        />
-      </aside>
+    <div className={darkMode ? 'dark' : ''}>
+      <div className="flex justify-between h-screen dark:bg-zinc-800">
+        {showingModal && (
+          <ModalWork
+            working={working}
+            successWork={successWork}
+            secondsElapsed={secondsElapsed}
+            onClose={handleOnCloseModal}
+          />
+        )}
+        <main className="h-full px-4 pt-4 w-max">
+          <SplitterSection
+            videoUrl={videoUrl}
+            onSplit={handleOnSplit}
+            onVideoLoad={handleOnVideoLoad}
+          />
+        </main>
+        <aside className="w-full h-full pt-4 pr-4">
+          <JoinerSection
+            parts={parts}
+            onReorder={handleOnReorder}
+            onDelete={handleOnDelete}
+            onSplitJoin={handleOnSplitJoin}
+          />
+        </aside>
+      </div>
     </div>
   );
 };

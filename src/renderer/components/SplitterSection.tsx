@@ -141,7 +141,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
 
   return (
     <>
-      <div className="mb-2 bg-black">
+      <div className="mb-2 bg-black drop-shadow-sm">
         <DropZone
           acceptedTypes={['video/mp4', 'video/m4v', 'video/avi', 'video/mkv']}
           onDrop={handleOnDropVideo}
@@ -229,6 +229,7 @@ const SplitterSection = ({ videoUrl, onSplit, onVideoLoad }: Props) => {
             width="16"
             height="16"
             viewBox="0 0 16 16"
+            className="fill-black dark:fill-zinc-300"
           >
             <path
               fillRule="evenodd"

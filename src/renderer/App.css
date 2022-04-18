@@ -10,13 +10,17 @@
   /* 🔎 "Input range theme" to change primary colors */
   /* I used a vanilla JS workaround to customize fill-lower section of an input range on Chrome */
   input[type=range] {
-    @apply h-2 border border-gray-400 rounded-full;
+    @apply h-2 border border-gray-400 rounded-full dark:border-gray-600;
   }
   input[type=range]:active {
-    @apply border-gray-300;
+    @apply border-gray-300 dark:border-gray-500;
   }
   input[type=range]::-webkit-slider-thumb {
-    @apply w-4 h-4 bg-indigo-800 rounded-full;
+    @apply w-4 h-4 bg-indigo-800 rounded-full dark:bg-indigo-500;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-zinc-200 dark:bg-zinc-700;
   }
 }
 
@@ -25,10 +29,10 @@
     @apply rounded-md text-sm p-2.5 disabled:pointer-events-none !important;
   }
   .btn-primary {
-    @apply text-white bg-indigo-700 disabled:bg-indigo-400 hover:bg-indigo-800 !important;
+    @apply text-white bg-indigo-700 dark:bg-indigo-600 disabled:dark:bg-indigo-500 disabled:opacity-50 hover:bg-indigo-800 dark:hover:bg-indigo-700 !important;
   }
   .btn-outline-primary {
-    @apply border border-indigo-700 text-indigo-700 bg-white disabled:border-indigo-300 disabled:text-indigo-300 hover:text-white hover:bg-indigo-700 !important;
+    @apply border border-indigo-700 dark:border-indigo-400 text-indigo-700 dark:text-indigo-400 bg-white dark:bg-transparent disabled:border-indigo-300 disabled:text-indigo-300 hover:text-white dark:hover:text-indigo-500 hover:bg-indigo-700 dark:hover:border-indigo-500 !important;
   }
 }
 
@@ -38,4 +42,22 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
+}
+
+*::-webkit-scrollbar {
+  width: auto; /* to make custom scrollbar rules apply */
+}
+*::-webkit-scrollbar-thumb {
+  border: 1px solid #E4E4E7;
+  background-color: #b1b1b3;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #9b9b9b;
+}
+.dark *::-webkit-scrollbar-thumb {
+  border: 1px solid #3F3F46;
+  background-color: #626263;
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #6b6b6b;
 }

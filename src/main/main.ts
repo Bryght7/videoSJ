@@ -49,6 +49,7 @@ declare global {
 
       // Main to renderer
       menuOpenFile: (callback: () => void) => void;
+      menuToggleDarkMode: (callback: () => void) => void;
     };
   }
 }

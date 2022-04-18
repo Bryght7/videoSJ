@@ -159,11 +159,11 @@ const InputTimestamp = ({
   };
 
   let classes =
-    'pl-2.5 border rounded-md w-28 focus:outline-none focus-visible:ring disabled:border-gray-400 disabled:text-gray-400 disabled:select-none disabled:cursor-not-allowed';
+    'pl-2.5 border rounded-md w-28 focus:outline-none focus-visible:ring disabled:border-gray-400 dark:disabled:text-zinc-500 disabled:text-gray-400 disabled:select-none disabled:cursor-not-allowed dark:bg-zinc-800';
   if (invalid) {
     classes += ' text-red-600 border-red-500 focus:border-red-700';
   } else {
-    classes += ' border-gray-500 focus:border-blue-700';
+    classes += ' border-gray-500 focus:border-blue-700 dark:text-zinc-300';
   }
 
   return (

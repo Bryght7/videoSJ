@@ -14,4 +14,6 @@ contextBridge.exposeInMainWorld('api', {
 
   // Main to renderer
   menuOpenFile: (callback) => ipcRenderer.on('menu-open-file', callback),
+  menuToggleDarkMode: (callback) =>
+    ipcRenderer.on('menu-toggle-dark-mode', callback),
 });

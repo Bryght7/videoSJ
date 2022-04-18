@@ -7,7 +7,7 @@ type Props = {
 
 const VideoTimestamp = ({ played, totalDuration }: Props) => {
   return (
-    <span>
+    <span className="dark:text-zinc-300">
       <Duration seconds={played} /> / <Duration seconds={totalDuration} />
     </span>
   );

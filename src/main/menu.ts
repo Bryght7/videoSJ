@@ -198,12 +198,25 @@ export default class MenuBuilder {
         label: '&File',
         submenu: [
           {
-            label: '&Open',
+            label: '&Open File...',
             accelerator: 'Ctrl+O',
             click: () => this.mainWindow.webContents.send('menu-open-file'),
           },
           {
-            label: '&Close',
+            label: 'Preferences',
+            submenu: [
+              {
+                label: 'Toggle light/dark mode',
+                click: () =>
+                  this.mainWindow.webContents.send('menu-toggle-dark-mode'),
+              },
+            ],
+          },
+          {
+            type: 'separator',
+          },
+          {
+            label: '&Exit',
             accelerator: 'Ctrl+W',
             click: () => {
               this.mainWindow.close();
