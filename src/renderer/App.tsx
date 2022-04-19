@@ -40,12 +40,17 @@ const App = () => {
   }, []);
 
   const handleOnSplit = (startTime: number, endTime: number) => {
-    setParts((oldParts) => [
+    const oldParts = parts.map((p) => {
+      p.active = false; // disactivate all parts
+      return p;
+    });
+    setParts([
       ...oldParts,
       {
         id: `id${Math.random().toString(16).slice(2)}`,
         startTime,
         endTime,
+        active: true, // newly added part is active
       },
     ]);
   };
@@ -75,7 +80,18 @@ const App = () => {
   };
 
   const handleOnPartClick = (index: number) => {
-    setLoadTimestamp(parts[index].startTime);
+    const newParts = parts.map((p, i) => {
+      p.active = index === i;
+      return p;
+    });
+    setParts(newParts);
+    /* Didn't feel like lifting all "played" state up here...
+     so I send the value down to SplitterSection to trigger seeking
+     and I add a negligible random epsilon number to force trigger
+     the useEffect when clicking several times on the same part */
+    setLoadTimestamp(
+      parts[index].startTime + (Math.random() * (0.00002 - 0.00001) + 0.00002)
+    );
   };
 
   const handleOnVideoLoad = (filePath: string) => {
@@ -128,6 +144,7 @@ const App = () => {
           <SplitterSection
             videoUrl={videoUrl}
             loadTimestamp={loadTimestamp}
+            parts={parts}
             onSplit={handleOnSplit}
             onVideoLoad={handleOnVideoLoad}
           />

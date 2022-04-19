@@ -10,13 +10,13 @@
   /* 🔎 "Input range theme" to change primary colors */
   /* I used a vanilla JS workaround to customize fill-lower section of an input range on Chrome */
   input[type=range] {
-    @apply h-2 border border-gray-400 rounded-full dark:border-gray-600;
+    @apply h-2 border border-gray-400 dark:border-gray-600;
   }
   input[type=range]:active {
     @apply border-gray-300 dark:border-gray-500;
   }
   input[type=range]::-webkit-slider-thumb {
-    @apply w-4 h-4 bg-indigo-800 rounded-full dark:bg-indigo-500;
+    @apply w-1 h-4 bg-indigo-800 dark:bg-indigo-500;
   }
 
   *::-webkit-scrollbar-track {

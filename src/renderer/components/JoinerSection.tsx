@@ -27,7 +27,7 @@ const JoinerSection = ({
         <PartList parts={parts} onDelete={onDelete} onClick={onClick} />
       </DragDropContext>
       <button
-        className="w-full mt-1.5 h-[70px] btn btn-primary"
+        className="w-full mt-1.5 h-[90px] btn btn-primary"
         type="button"
         disabled={parts.length < 1}
         onClick={() => onSplitJoin()}

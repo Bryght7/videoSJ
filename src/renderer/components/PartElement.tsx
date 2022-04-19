@@ -28,7 +28,11 @@ const PartElement = ({ index, part, onDelete, onClick }: Props) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="flex items-center justify-between h-8 px-4 rounded-md bg-slate-300 dark:bg-zinc-600 dark:text-zinc-300"
+          className={`flex items-center justify-between h-8 px-4 rounded-md ${
+            part.active
+              ? 'bg-green-400 dark:bg-green-700'
+              : 'bg-slate-300 dark:bg-zinc-600'
+          } dark:text-zinc-200`}
           aria-hidden="true"
           onClick={() => onClick(index)}
         >
@@ -49,7 +53,13 @@ const PartElement = ({ index, part, onDelete, onClick }: Props) => {
             </svg>{' '}
             {secondsToTimestamp(part.endTime)}
           </p>
-          <button type="button" onClick={() => onDelete(index)}>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onDelete(index);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

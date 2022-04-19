@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import Part from 'renderer/Part.type';
 import ReactPlayer from 'react-player';
 import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
@@ -7,10 +8,12 @@ import VolumeSlider from './VolumeSlider';
 import ButtonIcon from './ButtonIcon';
 import InputTimestamp from './InputTimestamp';
 import DropZone from './DropZone';
+import Timeline from './Timeline';
 
 type Props = {
   videoUrl: string;
   loadTimestamp: number;
+  parts: Part[];
   onSplit: (startTime: number, endTime: number) => void;
   onVideoLoad: (filePath: string) => void;
 };
@@ -18,6 +21,7 @@ type Props = {
 const SplitterSection = ({
   videoUrl,
   loadTimestamp,
+  parts,
   onSplit,
   onVideoLoad,
 }: Props) => {
@@ -186,6 +190,9 @@ const SplitterSection = ({
             onUnmute={handleOnUnmute}
           />
         </div>
+      </div>
+      <div className="mb-3 w-[415px]">
+        <Timeline width={415} parts={parts} totalDuration={totalDuration} />
       </div>
       <div className="flex space-x-2">
         <VideoControls
