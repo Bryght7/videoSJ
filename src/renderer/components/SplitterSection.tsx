@@ -1,7 +1,6 @@
 import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import Part from 'renderer/Part.type';
 import ReactPlayer from 'react-player';
-import VideoControls from './VideoControls';
 import VideoTimestamp from './VideoTimestamp';
 import VideoSeeker from './VideoSeeker';
 import VolumeSlider from './VolumeSlider';
@@ -9,6 +8,8 @@ import ButtonIcon from './ButtonIcon';
 import InputTimestamp from './InputTimestamp';
 import DropZone from './DropZone';
 import Timeline from './Timeline';
+import ButtonPlayPause from './ButtonPlayPause';
+import ButtonSkip from './ButtonSkip';
 
 type Props = {
   videoUrl: string;
@@ -35,6 +36,13 @@ const SplitterSection = ({
 
   const reactPlayer = useRef(null);
 
+  const seekTo = (seconds: number) => {
+    setPlayed(seconds);
+    if (reactPlayer.current) {
+      (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
+    }
+  };
+
   const handleOnEnded = () => {
     setPlaying(false);
     setPlayed(totalDuration);
@@ -53,13 +61,29 @@ const SplitterSection = ({
     setPlayed(state.playedSeconds);
   };
 
-  const handleControl = (control: 'Play' | 'Pause') => {
+  const handleControl = (
+    control: 'play' | 'pause' | 'forward' | 'backward',
+    value?: number
+  ) => {
     switch (control) {
-      case 'Play':
+      case 'play':
         setPlaying(true);
         break;
-      case 'Pause':
+      case 'pause':
         setPlaying(false);
+        break;
+      case 'forward':
+      case 'backward':
+        if (value) {
+          let newPlayed = played + (control === 'forward' ? value : -value);
+          // handle overflows
+          if (newPlayed < 0) {
+            newPlayed = 0;
+          } else if (newPlayed > totalDuration) {
+            newPlayed = totalDuration;
+          }
+          seekTo(newPlayed);
+        }
         break;
       default:
     }
@@ -67,10 +91,7 @@ const SplitterSection = ({
 
   const handleSeekChange = (event: SyntheticEvent) => {
     const target = event.target as HTMLInputElement;
-    setPlayed(parseInt(target.value, 10));
-    if (reactPlayer.current) {
-      (reactPlayer.current as ReactPlayer)?.seekTo(parseInt(target.value, 10));
-    }
+    seekTo(parseInt(target.value, 10));
   };
 
   const handleVolumeChange = (event: SyntheticEvent) => {
@@ -114,18 +135,12 @@ const SplitterSection = ({
 
   const handleChangeStartTime = (seconds: number) => {
     setStartTime(seconds);
-    setPlayed(seconds);
-    if (reactPlayer.current) {
-      (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
-    }
+    seekTo(seconds);
   };
 
   const handleChangeEndTime = (seconds: number) => {
     setEndTime(seconds);
-    setPlayed(seconds);
-    if (reactPlayer.current) {
-      (reactPlayer.current as ReactPlayer)?.seekTo(seconds);
-    }
+    seekTo(seconds);
   };
 
   const handleAddToParts = () => {
@@ -150,10 +165,7 @@ const SplitterSection = ({
   }, []); // using [] to execute only once
 
   useEffect(() => {
-    setPlayed(loadTimestamp);
-    if (reactPlayer.current) {
-      (reactPlayer.current as ReactPlayer)?.seekTo(loadTimestamp);
-    }
+    seekTo(loadTimestamp);
   }, [loadTimestamp]);
 
   return (
@@ -195,11 +207,21 @@ const SplitterSection = ({
         <Timeline width={415} parts={parts} totalDuration={totalDuration} />
       </div>
       <div className="flex space-x-2">
-        <VideoControls
+        <ButtonPlayPause
           playing={playing}
           ended={!playing && played !== 0 && played === totalDuration}
           onControl={handleControl}
           disabled={videoUrl === ''}
+        />
+        <ButtonSkip
+          direction="backward"
+          disabled={videoUrl === ''}
+          onControl={handleControl}
+        />
+        <ButtonSkip
+          direction="forward"
+          disabled={videoUrl === ''}
+          onControl={handleControl}
         />
         <ButtonIcon
           disabled={videoUrl === ''}
