@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import icon from '../../assets/icon.svg';
 import './App.css';
 import 'tailwindcss/tailwind.css';
 import SplitterSection from './components/SplitterSection';
