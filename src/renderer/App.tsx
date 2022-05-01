@@ -100,7 +100,9 @@ const App = () => {
   };
 
   const handleOnSplitJoin = async () => {
-    const outputFilePathTmp = await window.api.saveFileDialog();
+    const outputFilePathTmp = await window.api.saveFileDialog(
+      videoUrl.split('.').pop()
+    );
     if (outputFilePathTmp) {
       setOutputFilePath(outputFilePathTmp);
       const start = performance.now();

@@ -4,7 +4,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
   // Renderer to main
   openFileDialog: () => ipcRenderer.invoke('open-file-dialog'),
-  saveFileDialog: () => ipcRenderer.invoke('save-file-dialog'),
+  saveFileDialog: (extension) =>
+    ipcRenderer.invoke('save-file-dialog', extension),
   createInputFile: (videoUrl, parts) =>
     ipcRenderer.invoke('create-input-file', videoUrl, parts),
   splitJoin: (outputFilePath) =>

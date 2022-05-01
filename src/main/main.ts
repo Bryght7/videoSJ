@@ -39,7 +39,9 @@ declare global {
     api: {
       // Renderer to main
       openFileDialog: () => Promise<string | null>;
-      saveFileDialog: () => Promise<string | null | undefined>;
+      saveFileDialog: (
+        extension: string | undefined
+      ) => Promise<string | null | undefined>;
       createInputFile: (
         videoUrl: string,
         parts: Part[]
@@ -145,7 +147,10 @@ const handleOpenFile = async () => {
   if (mainWindow) {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
       // Accepted types (🔎 for other references)
-      filters: [{ name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] }],
+      filters: [
+        { name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] },
+        { name: 'Audio', extensions: ['mp3', 'wav'] },
+      ],
     });
 
     return canceled ? null : filePaths[0];
@@ -153,11 +158,24 @@ const handleOpenFile = async () => {
   return null;
 };
 
-const handleSaveFile = async () => {
+const handleSaveFile = async (extension: string | undefined) => {
   if (mainWindow) {
+    // Accepted types (🔎 for other references)
+    const filters = [
+      { name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] },
+      { name: 'Audio', extensions: ['mp3', 'wav'] },
+    ];
+    if (extension) {
+      const index = filters.findIndex((f) => f.extensions.includes(extension));
+      if (index !== -1 && index > 0) {
+        // if found index that is not already the first element
+        const filtersMoved = filters.splice(index, 1);
+        filters.unshift(filtersMoved[0]); // move matching element filter to first position
+      }
+    }
     const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-      // Accepted types (🔎 for other references)
-      filters: [{ name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] }],
+      filters,
+      defaultPath: extension ? `output.${extension}` : '',
     });
     return canceled ? null : filePath;
   }
@@ -243,7 +261,9 @@ app
      * Handlers for invokeable IPCs
      */
     ipcMain.handle('open-file-dialog', handleOpenFile);
-    ipcMain.handle('save-file-dialog', handleSaveFile);
+    ipcMain.handle('save-file-dialog', (event, extension) =>
+      handleSaveFile(extension)
+    );
     ipcMain.handle('create-input-file', (event, videoUrl, parts) =>
       handleCreateInputFile(videoUrl, parts)
     );
