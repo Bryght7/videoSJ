@@ -11,6 +11,7 @@ import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 import checkNodeEnv from '../scripts/check-node-env';
 import deleteSourceMaps from '../scripts/delete-source-maps';
+import CopyPlugin from 'copy-webpack-plugin';
 
 checkNodeEnv('production');
 deleteSourceMaps();
@@ -65,6 +66,16 @@ const configuration: webpack.Configuration = {
       NODE_ENV: 'production',
       DEBUG_PROD: false,
       START_MINIMIZED: false,
+    }),
+    // Copies local standalone html templates to the build (eg "About" page from the menu)
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../../', 'src', 'main', 'templates'),
+          to: 'templates',
+          toType: 'dir',
+        },
+      ],
     }),
   ],
 

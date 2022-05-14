@@ -171,8 +171,18 @@ const SplitterSection = ({
   return (
     <>
       <div className="mb-2 bg-black drop-shadow-sm">
+        {/* Accepted types (🔎 for other references) */}
         <DropZone
-          acceptedTypes={['video/mp4', 'video/m4v', 'video/avi', 'video/mkv']}
+          acceptedTypes={[
+            'video/mp4',
+            'video/m4v',
+            'video/webm',
+            'video/ogg',
+            'video/quicktime', // mov
+            'audio/ogg', // videos seem to also have this type
+            'audio/mpeg', // mp3
+            'audio/wav',
+          ]}
           onDrop={handleOnDropVideo}
         />
         <ReactPlayer

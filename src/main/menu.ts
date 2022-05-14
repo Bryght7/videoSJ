@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions,
 } from 'electron';
+import path from 'path';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -228,29 +229,55 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'Donate',
             click() {
-              shell.openExternal('https://electronjs.org');
+              shell.openExternal('https://www.buymeacoffee.com/Bryght7');
             },
           },
           {
-            label: 'Documentation',
-            click() {
-              shell.openExternal(
-                'https://github.com/electron/electron/tree/main/docs#readme'
-              );
-            },
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community');
-            },
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues');
+            label: 'About',
+            click: () => {
+              const RESOURCES_PATH = app.isPackaged
+                ? path.join(process.resourcesPath, 'assets')
+                : path.join(__dirname, '../../assets');
+
+              /**
+               * 👀 Note: to copy the files to the build package, I edited the file
+               * `.erb\configs\webpack.config.main.prod.ts` with a CopyPlugin plugin
+               */
+              const FILE_PATH = app.isPackaged
+                ? 'dist/main/templates/about.html'
+                : 'templates/about.html';
+
+              const aboutWindow = new BrowserWindow({
+                parent: this.mainWindow,
+                modal: true,
+                width: 315,
+                height: 520,
+                show: false,
+                resizable: false,
+                fullscreenable: false,
+                minimizable: false,
+                maximizable: false,
+                icon: path.join(RESOURCES_PATH, 'icon.ico'),
+              });
+              aboutWindow.setMenuBarVisibility(false);
+
+              // Using query option to send data to be used in the html file
+              aboutWindow.loadFile(FILE_PATH, {
+                query: {
+                  icon: path.join(RESOURCES_PATH, 'icon.ico'),
+                  appVersion:
+                    process.env.npm_package_version ||
+                    app.getVersion() ||
+                    'Unknown',
+                  processVersions: JSON.stringify(process.versions),
+                  license: 'GNU GPL v3.0',
+                },
+              });
+              aboutWindow.once('ready-to-show', () => {
+                aboutWindow.show();
+              });
             },
           },
         ],

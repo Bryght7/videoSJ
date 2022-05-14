@@ -11,7 +11,6 @@
 import path from 'path';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
-import pathToFfmpeg from 'ffmpeg-static';
 // @ts-ignore
 import shellEscape from 'any-shell-escape';
 import util from 'util';
@@ -148,7 +147,7 @@ const handleOpenFile = async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
       // Accepted types (🔎 for other references)
       filters: [
-        { name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] },
+        { name: 'Movies', extensions: ['mp4', 'm4v', 'webm', 'ogg', 'mov'] },
         { name: 'Audio', extensions: ['mp3', 'wav'] },
       ],
     });
@@ -162,7 +161,7 @@ const handleSaveFile = async (extension: string | undefined) => {
   if (mainWindow) {
     // Accepted types (🔎 for other references)
     const filters = [
-      { name: 'Movies', extensions: ['mp4', 'm4v', 'avi', 'mkv'] },
+      { name: 'Movies', extensions: ['mp4', 'm4v', 'webm', 'ogg', 'mov'] },
       { name: 'Audio', extensions: ['mp3', 'wav'] },
     ];
     if (extension) {
@@ -212,6 +211,13 @@ const handleSplitJoin = async (outputFilePath: string) => {
     'VideoSJ',
     'input.txt'
   );
+
+  const EXTRA_RESOURCES_PATH = app.isPackaged
+    ? path.join(process.resourcesPath, 'extraResources')
+    : path.join(__dirname, '../../extraResources');
+
+  const pathToFfmpeg = path.join(EXTRA_RESOURCES_PATH, 'ffmpeg.exe');
+
   const task = shellEscape([
     pathToFfmpeg,
     '-y',
@@ -292,5 +298,13 @@ app.on('ready', async () => {
       console.error(error);
       return callback('404');
     }
+  });
+});
+
+// Open all external links with the system browser instead of Electron
+app.on('browser-window-created', (event, window) => {
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
   });
 });
