@@ -4,8 +4,11 @@ import {
   shell,
   BrowserWindow,
   MenuItemConstructorOptions,
+  dialog,
 } from 'electron';
 import path from 'path';
+import https from 'https';
+import semverCompare from 'semver-compare';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -228,6 +231,77 @@ export default class MenuBuilder {
       {
         label: 'Help',
         submenu: [
+          {
+            label: 'Check for Updates...',
+            click: () => {
+              // Extract latest version from the package.json in the main github branch
+              https
+                .get(
+                  'https://raw.githubusercontent.com/Bryght7/videoSJ/main/package.json',
+                  (res) => {
+                    let body = '';
+
+                    res.on('data', (chunk) => {
+                      body += chunk;
+                    });
+
+                    res.on('end', () => {
+                      try {
+                        const remotePackageJson = JSON.parse(body);
+                        const latestVersion = remotePackageJson.version;
+                        const currentVersion =
+                          process.env.npm_package_version || app.getVersion();
+                        switch (semverCompare(latestVersion, currentVersion)) {
+                          case 1: {
+                            // latest > current
+                            const choiceId = dialog.showMessageBoxSync(
+                              this.mainWindow,
+                              {
+                                type: 'question',
+                                message: 'New update is available.',
+                                detail:
+                                  'Download the latest version of VideoSJ.',
+                                buttons: ['Open the releases page', 'Cancel'],
+                                defaultId: 0,
+                              }
+                            );
+                            if (choiceId === 0) {
+                              shell.openExternal(
+                                'https://github.com/Bryght7/videoSJ/releases'
+                              );
+                            }
+                            break;
+                          }
+                          case 0: // latest = current
+                            dialog.showMessageBoxSync(this.mainWindow, {
+                              type: 'info',
+                              title: 'VideoSJ',
+                              message:
+                                'There are currently no updates available.',
+                            });
+                            break;
+                          default:
+                        }
+                      } catch (error) {
+                        dialog.showErrorBox(
+                          'VideoSJ',
+                          'Failed to read the latest version number.'
+                        );
+                      }
+                    });
+                  }
+                )
+                .on('error', () => {
+                  dialog.showErrorBox(
+                    'VideoSJ',
+                    'Failed to request the latest version number.'
+                  );
+                });
+            },
+          },
+          {
+            type: 'separator',
+          },
           {
             label: 'Donate',
             click() {
