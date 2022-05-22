@@ -5,6 +5,8 @@ See the bottom of this document for the declaration of the reference variables
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Issues][issues-shield]][issues-url]
 [![GPL-3.0 License][license-shield]][license-url]
+![GitHub package.json version](https://img.shields.io/github/package-json/v/bryght7/videosj)
+[![GitHub all releases](https://img.shields.io/github/downloads/bryght7/videoSJ/total)](https://github.com/Bryght7/videoSJ/releases)
 
 <!-- PROJECT LOGO -->
 <br />
