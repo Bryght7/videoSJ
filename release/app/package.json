@@ -1,11 +1,10 @@
 {
   "name": "videosj",
   "version": "1.0.0",
-  "description": "A video splitter and joiner",
+  "description": "Shorten a media file by splitting it into parts and joining them back together, without re-encoding.",
   "main": "./dist/main/main.js",
   "author": {
     "name": "Bryan Lee",
-    "email": "electronreactboilerplate@gmail.com",
     "url": "https://www.buymeacoffee.com/Bryght7"
   },
   "scripts": {
